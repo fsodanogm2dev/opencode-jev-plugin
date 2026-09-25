@@ -171,6 +171,9 @@ Monitor Jev decisions, latency, and token savings in real time:
 tail -f ~/.local/share/jev/telemetry.jsonl
 ```
 
+- **Automatic Rotation**: When `telemetry.jsonl` reaches **5 MB** (~25,000 entries), it automatically rotates to `telemetry.jsonl.1`.
+- **Disk Cap**: Total disk space is strictly capped at **10 MB maximum**. Older backups are automatically pruned.
+
 Example telemetry log entries:
 
 ```json
