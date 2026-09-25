@@ -14,6 +14,8 @@ const DEFAULT_CONFIG_PATH = path.join(os.homedir(), ".config", "opencode", "jev.
 const CONFIG_PATH = process.env.JEV_CONFIG_PATH || DEFAULT_CONFIG_PATH;
 const TELEMETRY_DIR = path.join(os.homedir(), ".local", "share", "jev");
 const TELEMETRY_PATH = path.join(TELEMETRY_DIR, "telemetry.jsonl");
+const BACKUP_TELEMETRY_PATH = path.join(TELEMETRY_DIR, "telemetry.jsonl.1");
+const MAX_TELEMETRY_BYTES = 5 * 1024 * 1024;
 
 function loadConfig() {
   try {
@@ -31,6 +33,17 @@ function logTelemetry(entry) {
     if (!fs.existsSync(TELEMETRY_DIR)) {
       fs.mkdirSync(TELEMETRY_DIR, { recursive: true });
     }
+
+    if (fs.existsSync(TELEMETRY_PATH)) {
+      const stats = fs.statSync(TELEMETRY_PATH);
+      if (stats.size > MAX_TELEMETRY_BYTES) {
+        if (fs.existsSync(BACKUP_TELEMETRY_PATH)) {
+          fs.unlinkSync(BACKUP_TELEMETRY_PATH);
+        }
+        fs.renameSync(TELEMETRY_PATH, BACKUP_TELEMETRY_PATH);
+      }
+    }
+
     const line = JSON.stringify({ timestamp: new Date().toISOString(), ...entry }) + "\n";
     fs.appendFileSync(TELEMETRY_PATH, line, "utf8");
   } catch (err) {
