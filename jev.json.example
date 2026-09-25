@@ -1,0 +1,43 @@
+{
+  "enabled": true,
+  "apiKey": "${TYPESAFE_API_KEY}",
+  "modelVersion": "jev-1.13.0",
+  "brokerSocket": "/tmp/jev-broker.sock",
+  "apiUrl": "https://api.typesafe.ai/v1/systemone",
+  "points": {
+    "categoryRouting": {
+      "mode": "enforce",
+      "timeoutMs": 800,
+      "confidenceThreshold": 0.75
+    },
+    "safetyPreCheck": {
+      "mode": "enforce",
+      "timeoutMs": 1500,
+      "riskThreshold": 0.20
+    },
+    "testCompression": {
+      "mode": "enforce",
+      "timeoutMs": 2500,
+      "maxRawLength": 1200
+    },
+    "reasoningBudget": {
+      "mode": "enforce",
+      "timeoutMs": 800,
+      "minTokens": 1024,
+      "standardTokens": 4096,
+      "complexTokens": 16384,
+      "maxTokens": 32768
+    },
+    "skillPruning": {
+      "mode": "enforce",
+      "timeoutMs": 800,
+      "maxSkills": 3
+    },
+    "contextGC": {
+      "mode": "enforce",
+      "timeoutMs": 2000,
+      "relevanceThreshold": 0.35,
+      "minContextChars": 20000
+    }
+  }
+}

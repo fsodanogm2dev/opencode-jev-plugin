@@ -1,0 +1,25 @@
+{
+  "name": "opencode-jev-plugin",
+  "version": "1.0.0",
+  "description": "TypeSafe Jev System One decision and token-saving plugin for OpenCode and OmO",
+  "type": "module",
+  "main": "src/plugin.js",
+  "scripts": {
+    "start:broker": "node src/broker.js",
+    "test": "node scripts/test.js"
+  },
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "typesafe",
+    "jev",
+    "token-saving",
+    "ai-agent",
+    "system-one"
+  ],
+  "author": "Federico Sodano",
+  "license": "MIT",
+  "dependencies": {
+    "@opencode-ai/plugin": "^1.18.21"
+  }
+}
