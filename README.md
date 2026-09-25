@@ -191,8 +191,3 @@ Example telemetry log entries:
 2. **Local Caching**: Repeated identical queries never hit the external API. They resolve in memory on localhost in 2 ms.
 3. **Hard Vetoes**: Destructive actions (`rm -rf`, force-push, drop database) cannot be overridden by model outputs.
 
----
-
-## 📄 License
-
-MIT © [Federico Sodano](https://github.com/fsodanogm2dev)
