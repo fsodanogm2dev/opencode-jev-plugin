@@ -335,8 +335,21 @@ async function handleReasoningBudget(input, output, config) {
 
     if (pointConfig.mode === "enforce") {
       output.options = output.options || {};
-      output.options.reasoningBudget = targetTokens;
-      output.options.thinking = { type: "enabled", budgetTokens: targetTokens };
+      const modelId = input.model.api.id;
+      const adaptiveAnthropic = input.model.api.npm === "@ai-sdk/anthropic" && (
+        output.options.thinking?.type === "adaptive" ||
+        /^(?:claude-(?:opus|sonnet)(?:$|-5(?:-|$))|cursor-c-sonnet-5(?:-|$))/.test(modelId)
+      );
+
+      if (adaptiveAnthropic) {
+        if (output.options.thinking?.type !== "adaptive") {
+          output.options.thinking = { type: "adaptive" };
+        }
+        output.options.effort ??= scoreVal < 0.75 ? "low" : scoreVal < 1.75 ? "medium" : scoreVal < 2.75 ? "high" : "max";
+      } else {
+        output.options.reasoningBudget = targetTokens;
+        output.options.thinking = { type: "enabled", budgetTokens: targetTokens };
+      }
     }
 
     logTelemetry({
