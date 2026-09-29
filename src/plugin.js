@@ -299,30 +299,7 @@ async function handleReasoningBudget(input, output, config) {
   const pointConfig = config.points?.reasoningBudget;
   if (!pointConfig || pointConfig.mode === "off") return;
 
-  let userQuery = input.message?.summary?.body || input.message?.parts?.find(p => p.type === "text")?.text || "";
-  if (!userQuery && input.sessionID) {
-    try {
-      const dbPath = path.join(os.homedir(), ".local", "share", "opencode", "opencode.db");
-      if (fs.existsSync(dbPath)) {
-        const res = child_process.execFileSync("sqlite3", [
-          dbPath,
-          "-json",
-          `SELECT data FROM part WHERE session_id = "${input.sessionID}" AND data LIKE "%text%" ORDER BY time_created DESC LIMIT 10;`
-        ], { encoding: "utf8", timeout: 400 }).trim();
-        if (res) {
-          const rows = JSON.parse(res);
-          for (const r of rows) {
-            const d = JSON.parse(r.data);
-            if (d.type === "text" && d.text) {
-              userQuery = d.text;
-              break;
-            }
-          }
-        }
-      }
-    } catch {}
-  }
-
+  const userQuery = input.message?.summary?.body || input.message?.parts?.find(p => p.type === "text")?.text || "";
   if (!userQuery || userQuery.length < 5) return;
 
   const start = Date.now();
@@ -362,16 +339,12 @@ async function handleReasoningBudget(input, output, config) {
       output.options.thinking = { type: "enabled", budgetTokens: targetTokens };
     }
 
-    const baselineTokens = pointConfig.standardTokens || 16384;
-    const savedTokens = Math.max(0, baselineTokens - targetTokens);
-
     logTelemetry({
       point: "reasoningBudget",
       mode: pointConfig.mode,
       userQuery: userQuery.slice(0, 150),
       reasoningScore: scoreVal,
       allocatedBudget: targetTokens,
-      savedTokensEstimate: savedTokens,
       latencyMs
     });
   }
